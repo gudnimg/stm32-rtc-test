@@ -36,7 +36,11 @@ Note: The content of this register is valid only when TSF is set to 1 in `RTC_SR
 
 ## Why is BCD format used?
 
+* https://www.youtube.com/watch?v=RDoYo3yOL_E&ab_channel=Computerphile
+* https://embedded.fm/blog/2018/6/5/an-introduction-to-bcd
+* https://electronics.stackexchange.com/questions/12606/why-do-real-time-clock-chips-use-bcd
 
+----
 
 ## Other notes
 
