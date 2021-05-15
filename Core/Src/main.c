@@ -94,8 +94,10 @@ int main(void)
   MX_USART2_UART_Init();
   MX_RTC_Init();
   /* USER CODE BEGIN 2 */
-  RTC_TimeTypeDef sTime = {0};
-  RTC_DateTypeDef sDate = {0};
+  RTC_TimeTypeDef sTime = {16, 23, 0, RTC_HOURFORMAT12_PM, 0, 0};
+  RTC_DateTypeDef sDate = {RTC_WEEKDAY_SATURDAY, RTC_MONTH_MAY, 15, 21};
+  HAL_RTC_SetTime(&hrtc, &sTime, RTC_FORMAT_BIN);
+  HAL_RTC_SetDate(&hrtc, &sDate, RTC_FORMAT_BIN);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -105,11 +107,55 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	char msg[53];
+	char msg[27];
 	HAL_RTC_GetTime(&hrtc, &sTime, RTC_FORMAT_BIN);
 	HAL_RTC_GetDate(&hrtc, &sDate, RTC_FORMAT_BIN);
 
-	sprintf(msg, "Seconds: %d\n\r", sTime.Seconds);
+	// "2020-04-16T18:34:56"
+
+	// --------------- YEAR ----------------------------------
+	sprintf(msg, "%d", 2000 + sDate.Year);
+	// ----------------------------------------------------------
+	sprintf(msg + strlen(msg), "-");
+	// --------------- Month ----------------------------------
+	if (sDate.Month < 10) {
+		sprintf(msg + strlen(msg), "0%d", sDate.Month);
+	} else {
+		sprintf(msg + strlen(msg), "%d", sDate.Month);
+	}
+	// ----------------------------------------------------------
+	sprintf(msg + strlen(msg), "-");
+	// --------------- DAY ----------------------------------
+	if (sDate.Date < 10) {
+		sprintf(msg + strlen(msg), "0%d", sDate.Date);
+	} else {
+		sprintf(msg + strlen(msg), "%d", sDate.Date);
+	}
+	// ----------------------------------------------------------
+	sprintf(msg + strlen(msg), "T");
+	// --------------- HOURS ----------------------------------
+	if (sTime.Hours < 10) {
+		sprintf(msg + strlen(msg), "0%d", sTime.Hours);
+	} else {
+		sprintf(msg + strlen(msg), "%d", sTime.Hours);
+	}
+	// ----------------------------------------------------------
+	sprintf(msg + strlen(msg), ":");
+	// --------------- MINUTES ----------------------------------
+	if (sTime.Minutes < 10) {
+		sprintf(msg + strlen(msg), "0%d", sTime.Minutes);
+	} else {
+		sprintf(msg + strlen(msg), "%d", sTime.Minutes);
+	}
+	// ----------------------------------------------------------
+	sprintf(msg + strlen(msg), ":");
+	// --------------- SECONDS ----------------------------------
+	if (sTime.Seconds < 10) {
+		sprintf(msg + strlen(msg), "0%d\n\r", sTime.Seconds);
+	} else {
+		sprintf(msg + strlen(msg), "%d\n\r", sTime.Seconds);
+	}
+	// ----------------------------------------------------------
 	HAL_UART_Transmit(&huart2, (uint8_t*)msg, strlen(msg), 0xFFFF);
 	HAL_Delay(1000);
   }
